@@ -1,8 +1,8 @@
-let num1 = "";
+let num1 = "0";
 let num2 = "";
 let operator = "";
 let result = "";
-let dcml = ".";
+let isOn = false;
 
 const screen = document.querySelector("#screen");
 const nums = document.querySelectorAll(".num");
@@ -10,15 +10,41 @@ const operations = document.querySelectorAll(".operator");
 const equal = document.querySelector(".equals");
 const clear = document.querySelector(".clear");
 const backspace = document.querySelector(".backspace");
+let on = document.querySelector("#On");
+
+if (!isOn) {
+    screen.value = "";
+    screen.style.background = "rgb(179, 209, 190)";
+}
+on.addEventListener("click", () => {
+    if (!isOn) {
+        isOn = true;
+        screen.style.background = "rgb(110, 213, 158)";
+        num1 = "";
+        num2 = "";
+        operator = "";
+        screen.value = num1;
+    } else {
+        isOn = false;
+        screen.style.background = "rgb(179, 209, 190)";
+
+        screen.value = "";
+    }
+});
 
 for (let n of nums) {
     n.addEventListener("click", () => {
+        if (!isOn) return;
+
         getNum(n.textContent);
     });
 }
 
 for (let op of operations) {
-    op.addEventListener("click", () => getOperator(op.textContent))
+    op.addEventListener("click", () => {
+        if (!isOn) return;
+        getOperator(op.textContent)
+    });
 
 
 }
@@ -46,6 +72,7 @@ function getOperator(op) {
     }
     else {
         operator = op;
+
     }
 }
 
@@ -77,6 +104,8 @@ function operation(operator, num1, num2) {
 
 //result
 equal.addEventListener("click", () => {
+    if (!isOn) return;
+
     const results = operation(operator, num1, num2);
     screen.value = results;
     num1 = result;
@@ -86,6 +115,8 @@ equal.addEventListener("click", () => {
 
 //clear button
 clear.addEventListener("click", () => {
+    if (!isOn) return;
+
     num1 = "";
     num2 = "";
     operator = "";
@@ -93,4 +124,23 @@ clear.addEventListener("click", () => {
     screen.value = result;
 });
 
-//decimal button
+backspace.addEventListener("click", () => {
+    if (!isOn) return;
+
+    if (num2 != "") {
+        num2 = num2.slice(-1);
+        screen.value = num2;
+    }
+    else if (operator != "") {
+        operator = operator = operator.slice(-1)
+        screen.value = num1;
+    }
+    else if (num1 != "") {
+        num1 = num1.slice(0, -1);
+        screen.value = num1;
+    }
+    else if (result != "") {
+        result = result.slice(0, -1);
+        screen.value = result;
+    }
+});
